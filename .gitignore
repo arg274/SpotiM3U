@@ -1,0 +1,9 @@
+/.cache
+/config.yaml
+/spotim3u.log
+/spotim3u_first_run_log.7z
+/update_playlist.bat
+/update_playlist_w_art.bat
+/test/
+/db/
+/artwork/

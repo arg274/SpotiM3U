@@ -45,7 +45,7 @@ def playlist_csv_manager(playlist, replacepath, force_update=False):
 
     songs = []
 
-    with open(playlist, 'r', encoding='utf-8') as fp:
+    with open(playlist, 'r', encoding='utf-8-sig') as fp:
         logger.debug('Playlist ({}): Reading file \'{}\''.format('Local', playlist))
         playlist_obj = get_playlist(playlist)
         files = fp.readlines()

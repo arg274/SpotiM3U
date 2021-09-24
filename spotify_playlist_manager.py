@@ -130,17 +130,18 @@ def process_playlist(df, playlist_link, update_art=False):
     auth_manager = set_auth(clientflag=True)
     sp = spotipy.Spotify(client_credentials_manager=auth_manager)
 
-    sp_trackids = get_spotify_playlist_trackids(sp, current_playlist)
-    local_trackids = get_local_trackids(df)
+    if current_playlist['spotifyid'] != 'NIL':
+        sp_trackids = get_spotify_playlist_trackids(sp, current_playlist)
+        local_trackids = get_local_trackids(df)
 
-    logger.info('Playlist ({}) [{}]: Started processing'.format('Spotify', current_playlist.get_spotifyname_id()))
+        logger.info('Playlist ({}) [{}]: Started processing'.format('Spotify', current_playlist.get_spotifyname_id()))
 
-    prune_playlist(current_playlist, sp, local_trackids, sp_trackids)
-    add_to_playlist(current_playlist, sp, local_trackids, sp_trackids)
-    reorder_playlist(current_playlist, sp, local_trackids)
+        prune_playlist(current_playlist, sp, local_trackids, sp_trackids)
+        add_to_playlist(current_playlist, sp, local_trackids, sp_trackids)
+        reorder_playlist(current_playlist, sp, local_trackids)
 
-    if update_art:
-        logger.debug('SpotiM3U ({}): Update artwork is enabled'.format('Pref'))
-        update_playlist_artwork(current_playlist, sp)
+        if update_art:
+            logger.debug('SpotiM3U ({}): Update artwork is enabled'.format('Pref'))
+            update_playlist_artwork(current_playlist, sp)
 
-    logger.info('Playlist ({}) [{}]: Finished processing'.format('Spotify', current_playlist.get_spotifyname_id()))
+        logger.info('Playlist ({}) [{}]: Finished processing'.format('Spotify', current_playlist.get_spotifyname_id()))

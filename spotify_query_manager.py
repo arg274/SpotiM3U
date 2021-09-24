@@ -78,7 +78,7 @@ def get_spotify_id(title, artist, album):
         logger.error('SpotiM3U ({}): Authorisation failed'.format('Func'))
     else:
         sp = spotipy.Spotify(client_credentials_manager=auth_manager)
-        query = 'track:{} album:{} artist:{}'.format(title, album, artist)
+        query = '{} {} {}'.format(title, album, artist)
         logger.debug('Query ({}): Querying with \'{}\''.format('Spotify', query))
         result = sp.search(q=query, limit=1)
 
@@ -86,7 +86,7 @@ def get_spotify_id(title, artist, album):
             return result['tracks']['items'][0]['id']
         except (KeyError, TypeError, IndexError):
             try:
-                query = 'track:{} artist:{}'.format(title, get_romanised_name(artist))
+                query = '{} {}'.format(title, get_romanised_name(artist))
                 logger.debug('Query ({}): Querying (alt) with \'{}\''.format('Spotify', query))
                 result = sp.search(q=query, limit=1)
                 return result['tracks']['items'][0]['id']

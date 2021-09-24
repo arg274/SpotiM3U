@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from pathlib import Path
 
 import pandas as pd
@@ -41,7 +42,7 @@ def local_trackids_dupeexists(df):
 
 
 # noinspection PyTypeChecker
-def playlist_csv_manager(playlist, replacepath, force_update=False):
+def playlist_csv_manager(playlist, replacepath, force_update=False, regex_flag=False):
 
     songs = []
 
@@ -50,7 +51,10 @@ def playlist_csv_manager(playlist, replacepath, force_update=False):
         playlist_obj = get_playlist(playlist)
         files = fp.readlines()
         for file in files:
-            cur_file = file.strip().replace(replacepath[0], replacepath[1])
+            if regex_flag:
+                cur_file = re.sub(replacepath[0], replacepath[1], file.strip())
+            else:
+                cur_file = file.strip().replace(replacepath[0], replacepath[1])
             if os.path.isfile(cur_file):
                 cur_audiofile = AudioFile(cur_file)
                 songs.append(cur_audiofile)

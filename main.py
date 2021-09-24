@@ -7,9 +7,9 @@ from local_playlist_manager import playlists_db, playlist_csv_manager, local_tra
 from spotify_playlist_manager import process_playlist
 
 
-def playlist_iter(plpath, replacement_tuple=('', ''), cacheflag=False, force_update=False, update_art=False):
+def playlist_iter(plpath, replacement_tuple=('', ''), cacheflag=False, force_update=False, update_art=False,
+                  regex_flag=False):
 
-    playlists = []
     logger = logging.getLogger(__name__)
 
     ext = '/**/*.m3u?*'
@@ -17,7 +17,7 @@ def playlist_iter(plpath, replacement_tuple=('', ''), cacheflag=False, force_upd
     if '.m3u' not in plpath:
         plpath = plpath + ext
 
-    playlists = playlists + glob.glob(plpath, recursive=True)
+    playlists = glob.glob(plpath, recursive=True)
 
     playlists_db(playlists)
 
@@ -26,7 +26,8 @@ def playlist_iter(plpath, replacement_tuple=('', ''), cacheflag=False, force_upd
         if cacheflag:
             logger.debug('SpotiM3U ({}): Cache-only mode is enabled'.format('Pref'))
 
-        playlist_df = playlist_csv_manager(playlist, replacement_tuple, force_update=force_update)
+        playlist_df = playlist_csv_manager(playlist, replacement_tuple,
+                                           force_update=force_update, regex_flag=regex_flag)
         dupeflag = local_trackids_dupeexists(playlist_df)
 
         if dupeflag:
@@ -73,6 +74,7 @@ def main():
     parser.add_argument('--replacefrom', type=str, help='Text to be replaced in the playlists.')
     parser.add_argument('--replaceto', type=str, help='Replacement text for the playlists.')
     parser.add_argument('--loglevel', type=str, default='info', help='Set the logging level.')
+    parser.add_argument('--regex', action='store_true', help='Use regex matching for replace.')
     args = parser.parse_args()
 
     args.replacefrom = args.replacefrom if args.replacefrom is not None else ''
@@ -80,7 +82,7 @@ def main():
 
     logging_initiate(args.loglevel)
     playlist_iter(args.playlist_folder, replacement_tuple=(args.replacefrom, args.replaceto), cacheflag=args.cacheonly,
-                  force_update=args.forceupdate, update_art=args.updateart)
+                  force_update=args.forceupdate, update_art=args.updateart, regex_flag=args.regex)
 
 
 if __name__ == '__main__':
